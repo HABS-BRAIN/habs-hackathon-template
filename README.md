@@ -18,14 +18,14 @@ All free, all quick. Make them before anything else.
 | - | - |
 | [**GitHub**](https://github.com/signup) | Your team's code lives here, and it is what a GPU run is authorised against. |
 | [**Hugging Face**](https://huggingface.co/join) | Where you download the dataset from. |
-| [**Slack**](https://join.slack.com/t/habshackathon-pmd8697/shared_invite/zt-4ey1iblfn-pGBe0yROKQY0oAKBvCcn3w) | Mentors, announcements, and where your team key comes back. |
+| **Slack** | Mentors, announcements, and where your team key comes back. We email you the invitation — there is no public join link. |
 
 ## 1 · Setup, once
 
 |   |   |
 | - | - |
 | **Copy this repo** | **Use this template** → *Create a new repository*. Call it anything, public or private. |
-| **Join Slack** | [**habshackathon.slack.com**](https://join.slack.com/t/habshackathon-pmd8697/shared_invite/zt-4ey1iblfn-pGBe0yROKQY0oAKBvCcn3w) — mentors, announcements and everyone else are there. |
+| **Join Slack** | Accept the invitation we email you. Mentors, announcements and everyone else are there. Nothing to find: if it has not arrived, ask us. |
 | **DM `@HABS Bot` your repo** | Send your repo link, or `your-name/your-repo`. One message per team. Your **team key** and **results link** come back in that DM. Tell us even if you never plan to use a GPU: it is also how we know where your results belong. |
 | **Paste the key** | In [`.github/workflows/submit.yml`](.github/workflows/submit.yml), replace `PASTE-YOUR-TEAM-KEY-HERE`, keeping the quotes. Only needed for GPU runs. |
 
@@ -116,7 +116,6 @@ Open them with your **results link**:
 
 ---
 
-**Stuck?** Contact your mentor on
-[Slack](https://join.slack.com/t/habshackathon-pmd8697/shared_invite/zt-4ey1iblfn-pGBe0yROKQY0oAKBvCcn3w).
+**Stuck?** Contact your mentor on Slack.
 
 Good luck!
