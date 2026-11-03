@@ -80,6 +80,8 @@ Available days and task segments differ between participants. Released segments 
 
 The recordings combine 64-channel electroencephalography (EEG) with electrocardiography (ECG), skin conductance, respiratory activity, gaze and pupil size. An event status channel is also described in the manuscript. Use the record map and loading code to identify the channels, units and sampling rates in each file.
 
+GSR is stored in microvolts (µV) in the BDF. When loading the BDF with `load_bdf` from `bdf_loader.py`, GSR values are converted to microsiemens (µS).
+
 Eye-tracking data were acquired at approximately 200 Hz, while the other physiological signals were acquired at 1,000 Hz. The eye-tracking samples are stored at a lower rate; aligning them with the other signals requires accounting for their sampling rate and onset. Check the record map and loader documentation before combining modalities.
 
 `PREPROCESSED` contains cleaned and preprocessed data. Consult its accompanying documentation for the processing steps and file organization.

@@ -11,6 +11,9 @@ annotations, builds a DataFrame, plots a selected segment, and estimates EEG
 power. The reusable [`bdf_loader.py`](bdf_loader.py) also
 illustrates how gaze samples can be aligned using a `.record_map` sidecar.
 
+GSR is stored in microvolts (µV) in the BDF. When loading the BDF with
+`load_bdf` from `bdf_loader.py`, GSR values are converted to microsiemens (µS).
+
 The notebooks have their own dependencies, separate from the repository root
 `requirements.txt` used for submitted jobs. From the repository root, create an
 environment using either Conda:
