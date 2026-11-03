@@ -327,7 +327,7 @@
           "Channels": [
             {
               "name": "GSR",
-              "units": "uS"
+              "units": "uV"
             }
           ]
         }
