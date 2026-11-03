@@ -7,6 +7,25 @@ import pandas as pd
 import pyedflib
 
 
+def uV_to_uS(voltage, calibration_table=None):
+    """Convert microvolts to microsiemens using the GSR calibration table.
+
+    Calibration voltages are in volts and resistances are in kiloohms.
+    Values outside the calibration range are clamped to its endpoints.
+    """
+    if calibration_table is None:
+        calibration_table = {
+            "voltage_reading": [-2.14, -1.99755, -1.59528, 0.0167, 1.70074, 2.00199],
+            "resistance": [1000, 500, 250, 125, 50, 25],
+        }
+    resistance = np.interp(
+        np.asarray(voltage) / 1e6,
+        calibration_table["voltage_reading"],
+        calibration_table["resistance"],
+    )
+    return 1000 / resistance
+
+
 def load_bdf(bdf_path: str | Path, fallback_eeg: list[str] | None = None):
     """Load a BDF recording, check the units and align the Gaze data thanks to
     the record_map infos.
@@ -24,11 +43,13 @@ def load_bdf(bdf_path: str | Path, fallback_eeg: list[str] | None = None):
     raw : mne.io.Raw
         BDF metadata and annotations; samples are not preloaded.
     data_df : pandas.DataFrame
-        Full recording on the master timeline. Signal values use BDF header
-        units. Lower-rate gaze positions are reconstructed when possible;
+        Full recording on the master timeline. GSR values are converted from
+        microvolts to microsiemens; other signals use BDF header units.
+        Lower-rate gaze positions are reconstructed when possible;
         unmapped lower-rate channels are NaN.
     channels : pandas.DataFrame
-        Header names, units, sample rates, and sidecar channel metadata.
+        Header names, units for data_df, sample rates, and sidecar channel
+        metadata. Converted GSR channels have header_unit set to uS.
 
     The full table can require substantial memory for long recordings. Gaze
     timestamps are estimated, not the original per-sample XDF timestamps.
@@ -296,6 +317,12 @@ def load_bdf(bdf_path: str | Path, fallback_eeg: list[str] | None = None):
             else:
                 values = np.full(n_master, np.nan)
                 unmapped.append(label)
+            is_gsr = str(channels.loc[idx, "modality"]).lower() == "gsr" or (
+                not record_map and label.strip().lower() == "gsr"
+            )
+            if is_gsr:
+                values = uV_to_uS(values)
+                channels.loc[idx, "header_unit"] = "uS"
             signal_columns[label] = values
 
     data_df = pd.DataFrame(signal_columns)
