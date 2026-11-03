@@ -3,12 +3,12 @@
 ## Where it is
 
 The dataset is mounted read-only at `/data` inside your job, and `/data` **is**
-the `DATASET/` root described below — so `labels.csv` is at `/data/labels.csv`
+the `DATASET/` root described below — so `labels_train.csv` is at `/data/labels_train.csv`
 and the first participant is at `/data/CURATED/P001/`.
 
 ```python
 def process(data_dir: Path, out_dir: Path) -> None:
-    labels = pd.read_csv(data_dir / "labels.csv")
+    labels = pd.read_csv(data_dir / "labels_train.csv")
     bdf = data_dir / "CURATED" / "P001" / "P001_day-1_task-resting-state_multimodal.bdf"
 ```
 
@@ -18,7 +18,7 @@ The example loader is part of the repository at
 submitted job, make the module available to your code and check its dependencies
 (`mne`, `numpy`, `pandas`, and `pyedflib`) are in the root `requirements.txt`.
 
-**The dataset is 385 GB.** Read what you need and nothing else: a resting-state
+**The dataset is 351 GB.** Read what you need and nothing else: a resting-state
 recording is about 20 MB, an artefact block about 45 MB, and an
 emotion-video recording 150–280 MB. Walking every BDF is 171 GB of reading
 before your code does anything. `load_bdf` returns the whole recording as a DataFrame.
@@ -43,9 +43,9 @@ DATASET/
 │   ├── P002/
 │   └── ...
 ├── PREPROCESSED/            # Cleaned and preprocessed data
-├── labels.csv               # Video-trial annotations
+├── labels_train.csv         # Video-trial annotations
 ├── markers.csv              # Marker-code lookup
-├── participants.csv         # Participant-level information
+├── participants_train.csv   # Participant-level information
 └── README.md
 ```
 
@@ -107,9 +107,9 @@ For example, an event at 1,533.051 s in a segment whose `metadata_time_origin_s`
 | `duration_s`, `n_samples`, `alignment_max_residual_s` | Segment duration, sample count and alignment residual. |
 | `event_indices`, `partial_event_indices` | Event-index lists. |
 
-The metadata annotations and the fields in `labels.csv` may represent different sources. Check their provenance before treating them as interchangeable. `markers.csv` is a code lookup; it does not provide participant-specific event times.
+The metadata annotations and the fields in `labels_train.csv` may represent different sources. Check their provenance before treating them as interchangeable. `markers.csv` is a code lookup; it does not provide participant-specific event times.
 
-## Trial annotations: `labels.csv`
+## Trial annotations: `labels_train.csv`
 
 Each row describes a video trial. Participant ID and day identify the session, and the event marker helps identify the trial. The same video can occur more than once for a participant, so the filename alone is not a unique trial key. Verify the identifiers and marker correspondence against the session metadata for the release being used.
 
@@ -139,6 +139,24 @@ The 12 emotion categories are anger, fear, disgust, sadness, joy, surprise, exci
 
 A flagged trial is not necessarily incorrect or inattentive. Choose how to handle flagged and missing observations according to the research question and document that choice.
 
+### Held-out participants
+
+Twenty-nine participants are held out for evaluation. Their recordings are not
+in this release, and every field of theirs in `labels_train.csv` and
+`participants_train.csv` reads `TESTSUBJECT` instead of a value. The trial rows
+remain, so you can see the participant, day, video and markers, but no rating,
+self-report or emotion label.
+
+That sentinel is a string sitting in numeric columns, which is enough to load
+`rating_valence`, `rating_arousal`, `rating_dominance`,
+`video_presentation_order` and `flagged_outliers` as text. Read the tables with
+it treated as missing:
+
+```python
+labels = pd.read_csv(data_dir / "labels_train.csv", na_values=["TESTSUBJECT"])
+labels = labels.dropna(subset=["final_emotion_label"])   # 27,248 trials, 317 participants
+```
+
 ## Marker lookup: `markers.csv`
 
 | Field | Description |
@@ -150,14 +168,14 @@ A flagged trial is not necessarily incorrect or inattentive. Choose how to handl
 
 Use the session metadata to find event times. Verify that marker codes and their corresponding events agree across the lookup, trial table and recording for the release being analyzed.
 
-## Participant information: `participants.csv`
+## Participant information: `participants_train.csv`
 
-The participant table contains one row per participant ID, with cohort, demographic and questionnaire information where available. Questionnaire fields can include self-consciousness, empathy and personality scores, as well as session-specific anxiety and wellbeing measures. Coverage varies; consult the column names and release documentation for the available fields, questionnaire versions and scoring.
+One row per participant ID, with four fields: `cohort`, `participant_id`, `age` and `gender`. Coverage varies; an empty field means the value is unavailable, not zero.
 
 Join participant information to trials using `participant_id`, after checking that identifiers are consistent across the supplied files. Some people may have participated in more than one cohort under different IDs; consult the release documentation before treating IDs as guaranteed unique individuals.
 
 ## Using the data
 
-Start with the [example loader](starting_notebooks/bdf_loader.py) in this repository to load a BDF and its matching record map. Use the session metadata to locate events within the relevant segment, then connect trials to `labels.csv` using the participant, day and verified marker. Inspect missing values, available modalities and quality flags before analysis.
+Start with the [example loader](starting_notebooks/bdf_loader.py) in this repository to load a BDF and its matching record map. Use the session metadata to locate events within the relevant segment, then connect trials to `labels_train.csv` using the participant, day and verified marker. Inspect missing values, available modalities and quality flags before analysis.
 
 When evaluating models, choose train/test splits that match the intended question. Recordings can share videos, and repeated sessions or participant IDs can introduce dependencies. A model evaluated on videos also present in training may recognize video-specific patterns, so its accuracy alone does not establish that it decodes emotion.

@@ -64,12 +64,13 @@ def process(data_dir: Path, out_dir: Path) -> None:
     """Read recordings from data_dir, write your results into out_dir.
 
     data_dir is the dataset root, read-only and identical for every team:
-    data_dir/CURATED/P001/..., and on the platform also labels.csv,
-    participants.csv and scripts/. Anything you write into out_dir is kept.
+    data_dir/CURATED/P001/..., and on the platform also labels_train.csv,
+    markers.csv and participants_train.csv. Anything you write into out_dir
+    is kept.
 
     The same code runs against sample/, which has the same layout.
     """
-    # Named rather than globbed over everything. The dataset is 385 GB: the
+    # Named rather than globbed over everything. The dataset is 351 GB: the
     # emotion-video recordings are 150-280 MB each, resting-state about 20.
     recordings = sorted(data_dir.glob("CURATED/P*/P*_task-resting-state_*.bdf"))
     print(f"{len(recordings)} resting-state recording(s) found; "

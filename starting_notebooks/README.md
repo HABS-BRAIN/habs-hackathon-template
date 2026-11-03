@@ -74,8 +74,8 @@ RAM. The optional final cell replays one minute at recording speed; it can be
 interrupted. The result is a single-subject demonstration and may reflect eye
 or muscle activity as well as brain signals.
 
-Three tables describe the dataset: `markers.csv` (marker codes), `labels.csv`
-(trial annotations) and `participants.csv` (participant information). Only `markers.csv`
+Three tables describe the dataset: `markers.csv` (marker codes), `labels_train.csv`
+(trial annotations) and `participants_train.csv` (participant information). Only `markers.csv`
 is already in this repository, as it's needed for [`starting_notebooks/real-time_decoding.ipynb`](real-time_decoding.ipynb) — the three are part of the dataset, so take them
 with `--include "*.csv"`, or read them from `/data` inside a job. See
 [DATASET.md](../DATASET.md) for details.

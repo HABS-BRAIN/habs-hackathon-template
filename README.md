@@ -35,14 +35,14 @@ All free, all quick. Make them before anything else.
 
 ## 2 · The data
 
-📖 **[DATASET.md](DATASET.md)** — 384 participants, three tasks, EEG with ECG, skin
+📖 **[DATASET.md](DATASET.md)** — 355 participants, three tasks, EEG with ECG, skin
 conductance, respiration, gaze and pupil size, plus trial labels.
 **Read it before you write anything.**
 
 |   |   |
 | - | - |
 | [`sample/`](sample) | P001, day 1 — already here. Enough to write code against. |
-| [🤗 the full dataset](https://huggingface.co/datasets/HABSteam/multimodal-eeg-emotion) | Pull what you want onto your own machine: one file, one folder, or all 385 GB. |
+| [🤗 the full dataset](https://huggingface.co/datasets/HABSteam/multimodal-eeg-emotion) | Pull what you want onto your own machine: one file, one folder, or all 351 GB. |
 | `/data` | The whole dataset, mounted read-only on the GPU. Nothing to download. |
 
 Access is per person. Open the dataset page with a Hugging Face account, accept
@@ -55,7 +55,7 @@ hf download HABSteam/multimodal-eeg-emotion --repo-type dataset --local-dir ./da
     --include "CURATED/P001/*"                 # one participant
 #   --include "CURATED/*/*resting-state*"      # one task, everyone
 #   --include "*.csv"                          # the tables only
-#   (no --include)                             # everything, 385 GB
+#   (no --include)                             # everything, 351 GB
 ```
 
 This download is for working on your own machine. A GPU run needs none of it —
@@ -91,7 +91,7 @@ Same contract, no queue. Worth doing before every submission.
 
 ## 5 · Run it on a GPU — optional
 
-Only if your work needs one: heavy training, or the whole 385 GB at once. Everything
+Only if your work needs one: heavy training, or the whole 351 GB at once. Everything
 else belongs on your own machine, where the loop is faster anyway.
 
 **Actions** → **HABS** → **Run workflow**. That is the submission — pushing does not
