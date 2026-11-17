@@ -174,7 +174,7 @@ Use the session metadata to find event times. Verify that marker codes and their
 
 One row per participant ID, with four fields: `cohort`, `participant_id`, `age` and `gender`. Coverage varies; an empty field means the value is unavailable, not zero.
 
-Join participant information to trials using `participant_id`, after checking that identifiers are consistent across the supplied files. Some people may have participated in more than one cohort under different IDs; consult the release documentation before treating IDs as guaranteed unique individuals.
+Before merging, confirm that participant IDs use the same format in both files. Then join `participants_train.csv` to `labels_train.csv` on `participant_id`. Treat `TESTSUBJECT` as a held-out sentinel, not as an individual participant.
 
 ## Using the data
 
